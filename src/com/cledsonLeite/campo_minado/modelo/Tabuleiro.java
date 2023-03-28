@@ -46,22 +46,50 @@ public class Tabuleiro {
 		do {
 
 			minasArmadas = campos.stream().filter(minado).count();
-			
-			int aleatorio = (int)(Math.random()*campos.size());
-			
+
+			int aleatorio = (int) (Math.random() * campos.size());
+
 			campos.get(aleatorio).setMinado();
-			
+
 		} while (minasArmadas < minas);
 
 	}
-	
+
 	public boolean objetivoAlcancado() {
 		return campos.stream().allMatch(campo -> campo.objetivoAlcancado());
 	}
-	
+
 	public void reiniciarJogo() {
 		campos.stream().forEach(campo -> campo.reiniciar());
 		sortearMinas();
+	}
+
+	public void abrir(int linha, int coluna) {
+		campos.stream().filter(campo -> campo.getLinha() == linha && campo.getColuna() == coluna).findFirst()
+				.ifPresent(campo -> campo.abrir());
+		;
+	}
+
+	public void AlterarMarcacao(int linha, int coluna) {
+		campos.stream().filter(campo -> campo.getLinha() == linha && campo.getColuna() == coluna).findFirst()
+				.ifPresent(campo -> campo.alternarMarcacao());
+		;
+	}
+
+	public String toString() {
+		StringBuilder string = new StringBuilder();
+		int indice = 0;
+		for (int linha = 0; linha < linhas; linha++) {
+			for (int coluna = 0; coluna < colunas; coluna++) {
+				string.append(" ");
+				string.append(campos.get(indice));
+				string.append(" ");
+				indice++;
+			}
+			string.append("\n");
+		}
+
+		return string.toString();
 	}
 
 }
