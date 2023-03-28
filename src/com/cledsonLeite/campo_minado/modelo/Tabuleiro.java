@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.cledsonLeite.campo_minado.excecao.ExplocaoExceprion;
+
 public class Tabuleiro {
 	private int linhas;
 	private int colunas;
@@ -11,10 +13,10 @@ public class Tabuleiro {
 
 	private List<Campo> campos = new ArrayList<>();
 
-	public Tabuleiro(int linhas, int colunas, int minas) {
+	public Tabuleiro(int linhas, int colunas) {
 		this.linhas = linhas;
 		this.colunas = colunas;
-		this.minas = minas;
+		this.minas = (linhas * colunas) / 4;
 
 		gerarCampos();
 		associarVizinhos();
@@ -45,11 +47,9 @@ public class Tabuleiro {
 
 		do {
 
-			minasArmadas = campos.stream().filter(minado).count();
-
 			int aleatorio = (int) (Math.random() * campos.size());
-
 			campos.get(aleatorio).setMinado();
+			minasArmadas = campos.stream().filter(minado).count();
 
 		} while (minasArmadas < minas);
 
@@ -65,9 +65,14 @@ public class Tabuleiro {
 	}
 
 	public void abrir(int linha, int coluna) {
-		campos.stream().filter(campo -> campo.getLinha() == linha && campo.getColuna() == coluna).findFirst()
-				.ifPresent(campo -> campo.abrir());
-		;
+		try {
+			campos.stream().filter(campo -> campo.getLinha() == linha && campo.getColuna() == coluna).findFirst()
+					.ifPresent(campo -> campo.abrir());
+			;
+		} catch (ExplocaoExceprion erro) {
+			campos.forEach(campo -> campo.setAberto());
+			throw erro;
+		}
 	}
 
 	public void AlterarMarcacao(int linha, int coluna) {
@@ -78,8 +83,23 @@ public class Tabuleiro {
 
 	public String toString() {
 		StringBuilder string = new StringBuilder();
+		string.append("   ");
+		
+		for (int coluna = 0; coluna < colunas; coluna++) {
+			string.append(" ");
+			string.append(coluna);
+			string.append(" ");
+		}
+		string.append("\n");
+		string.append("   ");
+		string.append("---".repeat(colunas));
+		string.append("\n");
+		
 		int indice = 0;
 		for (int linha = 0; linha < linhas; linha++) {
+			string.append(linha);
+			string.append("|");
+			string.append(" ");
 			for (int coluna = 0; coluna < colunas; coluna++) {
 				string.append(" ");
 				string.append(campos.get(indice));
