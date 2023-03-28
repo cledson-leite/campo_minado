@@ -14,13 +14,13 @@ public class Campo {
 	private boolean minado;
 	private boolean marcado;
 	
-	private List<Campo> vizinhos = new ArrayList();
+	private List<Campo> vizinhos = new ArrayList<>();
 	
 	Campo(int linha, int coluna){
 		this.linha = linha;
 		this.coluna = coluna;
 	}
-	
+
 	boolean adicionarVizinho(Campo vizinho) {
 		boolean diagonal = 
 				(linha != vizinho.linha)
